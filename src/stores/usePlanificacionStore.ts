@@ -68,7 +68,8 @@ function crearPlanVacio(subsistema: SubsistemaEducativo = 'media_general'): Plan
       intencionalidades: ['Aprender a Crear', 'Aprender a Convivir y Participar'],
       temaIndispensable: '',
       temaGenerador: '',
-      tejidoTematico: ''
+      tejidoTematico: '',
+      competencia: ''
     },
     contenidosMacro: [
       {
@@ -88,6 +89,13 @@ function crearPlanVacio(subsistema: SubsistemaEducativo = 'media_general'): Plan
         id: `sem-${Date.now()}-1`,
         numeroSemana: 1,
         rangoFechas: 'Semana 1',
+        gradoAnio: '',
+        seccion: '',
+        areaFormacion: '',
+        referenteTeorico: '',
+        competencia: '',
+        temaGenerador: '',
+        tejidoTematico: '',
         clases: [
           {
             id: `c-${Date.now()}-1`,
@@ -286,13 +294,45 @@ export const usePlanificacionStore = defineStore('planificacion', () => {
       });
     }
 
+    const macroIndex = Math.min(plan.value.semanasMicro.length, plan.value.contenidosMacro.length - 1);
+    const referenteSugerido = macroIndex >= 0 ? plan.value.contenidosMacro[macroIndex]?.referenteTeoricoCientifico || '' : '';
+
     plan.value.semanasMicro.push({
       id: `sem-${Date.now()}`,
       numeroSemana: numSem,
       rangoFechas: `Semana ${numSem}`,
+      gradoAnio: plan.value.contextoEscolar.gradoAnio || '',
+      seccion: plan.value.contextoEscolar.seccion || '',
+      areaFormacion: plan.value.contextoEscolar.areaFormacion || '',
+      referenteTeorico: referenteSugerido,
+      competencia: plan.value.articulacion?.competencia || '',
+      temaGenerador: plan.value.articulacion?.temaGenerador || '',
+      tejidoTematico: plan.value.articulacion?.tejidoTematico || '',
       clases: nuevasClases
     });
 
+    guardarEnLocalStorage();
+  }
+
+  function sincronizarCurriculoSemana(semanaIndex: number) {
+    const semana = plan.value.semanasMicro[semanaIndex];
+    if (!semana) return;
+    semana.gradoAnio = plan.value.contextoEscolar.gradoAnio || semana.gradoAnio || '';
+    semana.seccion = plan.value.contextoEscolar.seccion || semana.seccion || '';
+    semana.areaFormacion = plan.value.contextoEscolar.areaFormacion || semana.areaFormacion || '';
+    if (!semana.competencia && plan.value.articulacion?.competencia) {
+      semana.competencia = plan.value.articulacion.competencia;
+    }
+    if (!semana.temaGenerador && plan.value.articulacion?.temaGenerador) {
+      semana.temaGenerador = plan.value.articulacion.temaGenerador;
+    }
+    if (!semana.tejidoTematico && plan.value.articulacion?.tejidoTematico) {
+      semana.tejidoTematico = plan.value.articulacion.tejidoTematico;
+    }
+    const macroIndex = Math.min(semanaIndex, plan.value.contenidosMacro.length - 1);
+    if (macroIndex >= 0 && !semana.referenteTeorico && plan.value.contenidosMacro[macroIndex]?.referenteTeoricoCientifico) {
+      semana.referenteTeorico = plan.value.contenidosMacro[macroIndex].referenteTeoricoCientifico;
+    }
     guardarEnLocalStorage();
   }
 
@@ -621,6 +661,7 @@ export const usePlanificacionStore = defineStore('planificacion', () => {
     agregarClaseASemana,
     eliminarClaseDeSemana,
     duplicarClase,
+    sincronizarCurriculoSemana,
     autogenerarEstructuraSemanas,
     // Evaluacion
     agregarEvaluacion,

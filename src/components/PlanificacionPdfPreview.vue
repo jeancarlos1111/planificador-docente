@@ -52,8 +52,29 @@
       </div>
     </header>
 
-    <!-- BLOQUE: IDENTIFICACIÓN Y CONTEXTO PEDAGÓGICO -->
-    <section class="seccion-bloque no-split">
+    <!-- BLOQUE: IDENTIFICACIÓN Y CONTEXTO PEDAGÓGICO SEGÚN FORMATO SELECCIONADO -->
+    <!-- Formato Semanal Exclusivo: datos compactos del docente y período -->
+    <section v-if="opciones.vistaExportar === 'semanal_micro'" class="seccion-bloque no-split">
+      <table class="tabla-mppe tabla-identificacion-semanal">
+        <tbody>
+          <tr>
+            <td class="bg-label" style="width: 15%;">Docente:</td>
+            <td style="width: 38%;"><strong>{{ plan.docente.nombreCompleto || 'No especificado' }}</strong></td>
+            <td class="bg-label" style="width: 15%;">C.I. / Correo:</td>
+            <td style="width: 32%;">{{ plan.docente.cedula }} <span v-if="plan.docente.correo">({{ plan.docente.correo }})</span></td>
+          </tr>
+          <tr>
+            <td class="bg-label">Año Escolar:</td>
+            <td><strong>{{ plan.contextoEscolar.anioEscolar }}</strong></td>
+            <td class="bg-label">Momento / Turno:</td>
+            <td><strong>{{ plan.contextoEscolar.momentoPedagogico }}</strong> (Turno: {{ plan.contextoEscolar.turno }})</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Formato Completo o Plan de Lapso Macro: ficha institucional completa con PEIC -->
+    <section v-else-if="opciones.vistaExportar === 'completo' || opciones.vistaExportar === 'lapso_macro'" class="seccion-bloque no-split">
       <div class="seccion-header">
         <span class="seccion-num">I.</span> DATOS DE IDENTIFICACIÓN Y CONTEXTO ESCOLAR
       </div>
@@ -93,10 +114,31 @@
       </table>
     </section>
 
+    <!-- Formato Evaluación o Plan de Acción -->
+    <section v-else class="seccion-bloque no-split">
+      <table class="tabla-mppe">
+        <tbody>
+          <tr>
+            <td class="bg-label" style="width: 16%;">Docente:</td>
+            <td style="width: 40%;"><strong>{{ plan.docente.nombreCompleto || 'No especificado' }}</strong> (C.I.: {{ plan.docente.cedula }})</td>
+            <td class="bg-label" style="width: 16%;">Año Escolar:</td>
+            <td style="width: 28%;">{{ plan.contextoEscolar.anioEscolar }} - {{ plan.contextoEscolar.momentoPedagogico }}</td>
+          </tr>
+          <tr>
+            <td class="bg-label">Grado y Sección:</td>
+            <td><strong>{{ plan.contextoEscolar.gradoAnio || 'S/E' }}</strong> - Sección "{{ plan.contextoEscolar.seccion }}"</td>
+            <td class="bg-label">Área de Formación:</td>
+            <td><strong>{{ plan.contextoEscolar.areaFormacion || 'General' }}</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
     <!-- ================= SECCIÓN 1: PLAN DE LAPSO (MACRO) ================= -->
     <section v-if="mostrarSeccion('lapso_macro')" class="seccion-bloque">
       <div class="seccion-header">
-        <span class="seccion-num">II.</span> PLAN DE LAPSO (MACRO) - CRONOGRAMA DE CONTENIDOS Y DIMENSIONES
+        <span class="seccion-num">{{ opciones.vistaExportar === 'lapso_macro' ? '' : 'II.' }}</span>
+        FORMATO DE PLAN DE LAPSO (MACRO) - CRONOGRAMA DE CONTENIDOS Y DIMENSIONES
       </div>
 
       <div class="texto-diagnostico no-split">
@@ -138,55 +180,91 @@
       </table>
     </section>
 
-    <!-- ================= SECCIÓN 2: PLAN SEMANAL (MICRO) ================= -->
+    <!-- ================= SECCIÓN 2: FORMATO DE PLANIFICACIÓN SEMANAL (MICRO) ================= -->
     <section v-if="mostrarSeccion('semanal_micro')" class="seccion-bloque">
-      <div class="seccion-header">
-        <span class="seccion-num">III.</span> PLAN SEMANAL (MICRO) - DESGLOSE DE CLASES (INICIO, DESARROLLO Y CIERRE)
+      <div v-if="opciones.vistaExportar === 'completo'" class="seccion-header">
+        <span class="seccion-num">III.</span> FORMATO DE PLANIFICACIÓN SEMANAL (MICRO-PLANIFICACIÓN)
       </div>
 
-      <div v-for="semana in plan.semanasMicro" :key="semana.id" class="semana-bloque q-mb-md">
+      <div
+        v-for="(semana, sIdx) in semanasVisibles"
+        :key="semana.id || sIdx"
+        class="semana-bloque q-mb-md"
+        :class="{ 'salto-pagina': sIdx > 0 && opciones.vistaExportar === 'semanal_micro' }"
+      >
         <div class="semana-titulo-barra no-split">
           <strong>SEMANA {{ semana.numeroSemana }}</strong>: {{ semana.rangoFechas }} ({{ semana.clases.length }} Clases planificadas)
         </div>
 
-        <div v-for="clase in semana.clases" :key="clase.id" class="clase-tarjeta no-split q-mb-sm">
+        <!-- CUADRO CURRICULAR EXIGIDO: Grado, sección, área, referente teórico, competencia, tema generador, tejido temático -->
+        <table class="tabla-mppe tabla-cuadro-curricular no-split">
+          <tbody>
+            <tr>
+              <td class="bg-label" style="width: 14%;">Grado / Año:</td>
+              <td style="width: 20%;"><strong>{{ semana.gradoAnio || plan.contextoEscolar.gradoAnio || '---' }}</strong></td>
+              <td class="bg-label" style="width: 11%;">Sección:</td>
+              <td style="width: 15%;"><strong>{{ semana.seccion || plan.contextoEscolar.seccion || '---' }}</strong></td>
+              <td class="bg-label" style="width: 12%;">Área:</td>
+              <td style="width: 28%;"><strong>{{ semana.areaFormacion || plan.contextoEscolar.areaFormacion || '---' }}</strong></td>
+            </tr>
+            <tr>
+              <td class="bg-label">Referente Teórico:</td>
+              <td colspan="5">{{ semana.referenteTeorico || obtenerReferenteSugerido(sIdx) || '---' }}</td>
+            </tr>
+            <tr>
+              <td class="bg-label">Competencia:</td>
+              <td colspan="5"><strong>{{ semana.competencia || plan.articulacion.competencia || '---' }}</strong></td>
+            </tr>
+            <tr>
+              <td class="bg-label">Tema Generador:</td>
+              <td colspan="5">{{ semana.temaGenerador || plan.articulacion.temaGenerador || '---' }}</td>
+            </tr>
+            <tr>
+              <td class="bg-label">Tejido Temático:</td>
+              <td colspan="5">{{ semana.tejidoTematico || plan.articulacion.tejidoTematico || '---' }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- ABAJO DEBE ESTAR: INICIO, DESARROLLO, CIERRE Y RECURSOS A UTILIZAR -->
+        <div v-for="clase in semana.clases" :key="clase.id" class="clase-tarjeta no-split q-mt-xs q-mb-sm">
           <div class="clase-header-barra">
             <span class="clase-badge">CLASE {{ clase.numeroClase }}</span>
             <span class="clase-dia"><strong>{{ clase.diaSemana }}</strong> {{ clase.fecha ? '(' + clase.fecha + ')' : '' }} - {{ clase.horasAcademicas }} Horas pedagógicas</span>
+            <span v-if="clase.contenidoSesion" class="clase-contenido-titulo">— <strong>Contenido de la Sesión:</strong> {{ clase.contenidoSesion }}</span>
           </div>
 
-          <table class="tabla-mppe">
+          <table class="tabla-mppe tabla-momentos">
             <tbody>
               <tr>
-                <td class="bg-label" style="width: 15%;">Contenido de la Sesión:</td>
-                <td colspan="2"><strong>{{ clase.contenidoSesion || 'No especificado' }}</strong></td>
-              </tr>
-              <tr>
-                <td class="bg-label-momento bg-inicio" style="width: 15%;">
+                <td class="bg-label-momento bg-inicio" style="width: 16%;">
                   <strong>INICIO</strong>
                   <div class="texto-secundario">Saberes previos y motivación</div>
                 </td>
-                <td colspan="2" class="celda-contenido">{{ clase.inicio || 'No detallado' }}</td>
+                <td class="celda-contenido">{{ clase.inicio || 'No detallado' }}</td>
               </tr>
               <tr>
                 <td class="bg-label-momento bg-desarrollo">
                   <strong>DESARROLLO</strong>
                   <div class="texto-secundario">Construcción y profundización</div>
                 </td>
-                <td colspan="2" class="celda-contenido">{{ clase.desarrollo || 'No detallado' }}</td>
+                <td class="celda-contenido">{{ clase.desarrollo || 'No detallado' }}</td>
               </tr>
               <tr>
                 <td class="bg-label-momento bg-cierre">
                   <strong>CIERRE</strong>
                   <div class="texto-secundario">Sistematización y retroalimentación</div>
                 </td>
-                <td colspan="2" class="celda-contenido">{{ clase.cierre || 'No detallado' }}</td>
+                <td class="celda-contenido">{{ clase.cierre || 'No detallado' }}</td>
               </tr>
               <tr>
-                <td class="bg-label">Recursos:</td>
-                <td colspan="2" class="celda-contenido font-sm">
+                <td class="bg-label">
+                  <strong>RECURSOS A UTILIZAR</strong>
+                </td>
+                <td class="celda-contenido font-sm">
                   <span v-for="(rec, rIdx) in clase.recursos" :key="rIdx" class="recurso-tag">• {{ rec }} </span>
                   <span v-if="clase.recursosDetalle"> | <em>Detalle:</em> {{ clase.recursosDetalle }}</span>
+                  <span v-if="(!clase.recursos || !clase.recursos.length) && !clase.recursosDetalle" class="text-grey-6">Sin especificar</span>
                 </td>
               </tr>
             </tbody>
@@ -336,6 +414,7 @@ const props = withDefaults(
   defineProps<{
     plan: PlanificacionDocente;
     opciones?: OpcionesExportacionPDF;
+    semanaIndex?: number | null;
   }>(),
   {
     opciones: () => ({
@@ -344,11 +423,25 @@ const props = withDefaults(
       incluirFirmas: true,
       tamanoFuente: 'pequena',
       vistaExportar: 'completo'
-    })
+    }),
+    semanaIndex: null
   }
 );
 
 const documentoImpresionRef = ref<HTMLElement | null>(null);
+
+const semanasVisibles = computed(() => {
+  if (props.semanaIndex !== undefined && props.semanaIndex !== null && props.semanaIndex >= 0) {
+    const sel = props.plan.semanasMicro[props.semanaIndex];
+    return sel ? [sel] : props.plan.semanasMicro;
+  }
+  return props.plan.semanasMicro;
+});
+
+function obtenerReferenteSugerido(sIdx: number): string {
+  const macro = props.plan.contenidosMacro[Math.min(sIdx, props.plan.contenidosMacro.length - 1)];
+  return macro?.referenteTeoricoCientifico || '';
+}
 
 const totalPonderacion = computed(() => {
   return props.plan.planEvaluacion.reduce((acum, act) => acum + (Number(act.ponderacionPorcentaje) || 0), 0);
@@ -364,14 +457,14 @@ function mostrarSeccion(tipo: string): boolean {
 }
 
 const tituloDocumento = computed(() => {
-  if (props.opciones.vistaExportar === 'lapso_macro') {
-    return 'PLAN DE LAPSO (MACRO) - CRONOGRAMA DE CONTENIDOS Y APRENDIZAJES ESPERADOS';
-  } else if (props.opciones.vistaExportar === 'semanal_micro') {
-    return 'PLANIFICACIÓN SEMANAL (MICRO) - DESGLOSE DE CLASES (INICIO, DESARROLLO Y CIERRE)';
+  if (props.opciones.vistaExportar === 'semanal_micro') {
+    return 'FORMATO OFICIAL DE PLANIFICACIÓN SEMANAL (MICRO-PLANIFICACIÓN)';
+  } else if (props.opciones.vistaExportar === 'lapso_macro') {
+    return 'FORMATO OFICIAL DE PLAN DE LAPSO (MACRO-PLANIFICACIÓN)';
   } else if (props.opciones.vistaExportar === 'evaluacion_cronograma') {
-    return 'PLAN DE EVALUACIÓN OFICIAL (CRONOGRAMA DE EVALUACIONES MPPE)';
+    return 'FORMATO OFICIAL DEL PLAN Y CRONOGRAMA DE EVALUACIÓN (MPPE)';
   } else if (props.opciones.vistaExportar === 'plan_accion') {
-    return 'PLAN DE ACCIÓN PEDAGÓGICO - PROYECTO CORTO';
+    return 'FORMATO OFICIAL DE PLAN DE ACCIÓN PEDAGÓGICO (PROYECTO CORTO)';
   }
   return 'PLANIFICACIÓN CURRICULAR DOCENTE INTEGRAL (MPPE - VENEZUELA)';
 });
@@ -696,6 +789,39 @@ defineExpose({
   margin-top: 1px;
 }
 
+/* FORMATO DE PLANIFICACIÓN SEMANAL (CUADRO Y MOMENTOS) */
+.tabla-cuadro-curricular {
+  margin-top: 4px;
+  margin-bottom: 6px;
+  border: 1.5px solid #1e3a8a;
+}
+
+.tabla-cuadro-curricular td {
+  padding: 4px 6px;
+}
+
+.tabla-identificacion-semanal {
+  margin-bottom: 6px;
+}
+
+.tabla-momentos {
+  margin-top: 0;
+  margin-bottom: 8px;
+  border-top: none;
+}
+
+.clase-contenido-titulo {
+  font-size: 8.5px;
+  color: #1e3a8a;
+}
+
+.salto-pagina {
+  page-break-before: always;
+  break-before: page;
+  margin-top: 16px;
+  padding-top: 8px;
+}
+
 .no-split {
   page-break-inside: avoid !important;
   break-inside: avoid !important;
@@ -705,5 +831,6 @@ defineExpose({
   body { background: #ffffff; }
   .documento-mppe { max-width: 100% !important; padding: 0 !important; }
   .no-split { page-break-inside: avoid !important; }
+  .salto-pagina { page-break-before: always; break-before: page; }
 }
 </style>

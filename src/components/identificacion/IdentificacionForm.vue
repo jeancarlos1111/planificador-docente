@@ -1,7 +1,9 @@
 <template>
-  <q-card flat bordered class="bg-surface q-pa-sm q-pa-md-md">
-    <div class="text-subtitle1 text-weight-bold text-primary q-mb-sm row items-center">
-      <q-icon name="verified" class="q-mr-xs text-primary" size="20px" />
+  <q-card flat bordered class="bg-surface q-pa-sm q-pa-md-md mobile-card">
+    <div class="text-subtitle1 text-weight-bolder text-primary q-mb-sm row items-center">
+      <q-avatar size="28px" color="blue-1" text-color="primary" class="q-mr-xs">
+        <q-icon name="verified" size="18px" />
+      </q-avatar>
       <span>1. Membrete Oficial MPPE y Plantel</span>
     </div>
 
@@ -108,6 +110,55 @@
       </div>
       <div class="col-12 col-md-6">
         <q-input v-model="plan.contextoEscolar.peicProposito" label="Propósito articulado al aula" outlined dense autogrow @update:model-value="guardar" />
+      </div>
+    </div>
+
+    <q-separator class="q-my-sm" />
+
+    <div class="text-subtitle2 text-weight-bold text-primary q-mb-xs">
+      Articulación Curricular MPPE (Ejes, Tema Generador y Competencia)
+    </div>
+    <div class="row q-col-gutter-sm">
+      <div class="col-12 col-md-6">
+        <q-input
+          v-model="plan.articulacion.temaGenerador"
+          label="Tema Generador *"
+          placeholder="Ej. El agua y los componentes celulares: bases biomoleculares..."
+          outlined
+          dense
+          @update:model-value="guardar"
+        />
+      </div>
+      <div class="col-12 col-md-6">
+        <q-input
+          v-model="plan.articulacion.tejidoTematico"
+          label="Tejido Temático *"
+          placeholder="Ej. Estructura celular procariota y eucariota. Microscopía básica..."
+          outlined
+          dense
+          @update:model-value="guardar"
+        />
+      </div>
+      <div class="col-12 col-md-8">
+        <q-input
+          v-model="plan.articulacion.competencia"
+          label="Competencia General a Desarrollar *"
+          placeholder="Ej. Analiza los postulados de la teoría celular y compara estructuras celulares..."
+          outlined
+          dense
+          autogrow
+          @update:model-value="guardar"
+        />
+      </div>
+      <div class="col-12 col-md-4">
+        <q-input
+          v-model="plan.articulacion.temaIndispensable"
+          label="Tema Indispensable"
+          placeholder="Ej. Preservación de la vida en el planeta..."
+          outlined
+          dense
+          @update:model-value="guardar"
+        />
       </div>
     </div>
 

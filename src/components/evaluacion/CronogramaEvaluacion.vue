@@ -1,9 +1,10 @@
 <template>
-  <q-card flat bordered class="bg-surface q-pa-sm q-pa-md-md">
+  <q-card flat bordered class="bg-surface q-pa-xs q-pa-sm-sm q-pa-md-md mobile-card">
     <div class="row items-center justify-between q-mb-sm">
       <div>
-        <div class="text-subtitle1 text-weight-bold text-primary">
-          4. Plan de Evaluación Oficial (Cronograma de Evaluaciones)
+        <div class="text-subtitle1 text-weight-bolder text-primary row items-center q-gutter-xs">
+          <q-icon name="fact_check" color="primary" size="22px" />
+          <span>4. Plan de Evaluación</span>
         </div>
         <div class="text-caption text-grey-7">
           Tema, sustento científico, actividad, técnica, instrumento, ponderación (%) y escala 1-20 pts.

@@ -39,12 +39,19 @@ export interface SesionClaseMicro {
 }
 
 /**
- * Semana didáctica que agrupa múltiples clases
+ * Semana didáctica que agrupa múltiples clases y contiene el cuadro curricular oficial MPPE
  */
 export interface SemanaDidactica {
   id: string;
   numeroSemana: number;
   rangoFechas: string;
+  gradoAnio?: string;
+  seccion?: string;
+  areaFormacion?: string;
+  referenteTeorico?: string;
+  competencia?: string;
+  temaGenerador?: string;
+  tejidoTematico?: string;
   clases: SesionClaseMicro[];
 }
 
@@ -138,6 +145,7 @@ export interface ArticulacionCurricular {
   temaIndispensable: string;
   temaGenerador: string;
   tejidoTematico: string;
+  competencia?: string;
 }
 
 export interface FirmasDocumento {

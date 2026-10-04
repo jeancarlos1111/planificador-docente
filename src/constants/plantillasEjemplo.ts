@@ -55,7 +55,8 @@ export const PLANTILLA_MEDIA_GENERAL: PlanificacionDocente = {
     ],
     temaIndispensable: 'Preservación de la vida en el planeta, salud y buen vivir',
     temaGenerador: 'El agua y los componentes celulares: bases biomoleculares para el equilibrio ecosistémico',
-    tejidoTematico: 'Estructura celular procariota y eucariota. Microscopía básica. La importancia de la hidratación y hábitos de vida saludable.'
+    tejidoTematico: 'Estructura celular procariota y eucariota. Microscopía básica. La importancia de la hidratación y hábitos de vida saludable.',
+    competencia: 'Analiza los postulados de la teoría celular y compara estructuras celulares mediante el uso del microscopio óptico en el laboratorio escolar.'
   },
   contenidosMacro: [
     {
@@ -97,6 +98,13 @@ export const PLANTILLA_MEDIA_GENERAL: PlanificacionDocente = {
       id: 'sem-1',
       numeroSemana: 1,
       rangoFechas: '06/10/2025 al 10/10/2025',
+      gradoAnio: '3er Año',
+      seccion: 'A',
+      areaFormacion: 'Ciencias Naturales (Biología)',
+      referenteTeorico: 'Postulados de Schleiden, Schwann y Virchow. Manejo técnico del microscopio óptico.',
+      competencia: 'Analiza los postulados de la teoría celular y maneja adecuadamente el microscopio óptico para observar muestras biológicas.',
+      temaGenerador: 'El agua y los componentes celulares: bases biomoleculares para el equilibrio ecosistémico',
+      tejidoTematico: 'Estructura celular procariota y eucariota. Microscopía básica escolar.',
       clases: [
         {
           id: 'sem-1-c1',
@@ -130,6 +138,13 @@ export const PLANTILLA_MEDIA_GENERAL: PlanificacionDocente = {
       id: 'sem-2',
       numeroSemana: 2,
       rangoFechas: '13/10/2025 al 17/10/2025',
+      gradoAnio: '3er Año',
+      seccion: 'A',
+      areaFormacion: 'Ciencias Naturales (Biología)',
+      referenteTeorico: 'Célula procariota vs eucariota. Tinción biológica y observación microscópica de muestras.',
+      competencia: 'Diferencia características morfológicas y funcionales de células procariotas y eucariotas mediante contraste experimental.',
+      temaGenerador: 'El agua y los componentes celulares: bases biomoleculares para el equilibrio ecosistémico',
+      tejidoTematico: 'Estructura celular procariota y eucariota. Células de cebolla y epitelio bucal.',
       clases: [
         {
           id: 'sem-2-c1',
@@ -309,7 +324,8 @@ export const PLANTILLA_PRIMARIA: PlanificacionDocente = {
     ],
     temaIndispensable: 'Seguridad y soberanía alimentaria',
     temaGenerador: 'El huerto escolar y la redacción creativa comunitaria',
-    tejidoTematico: 'Las plantas y sus partes. Textos instructivos y narrativos. Operaciones matemáticas en el huerto.'
+    tejidoTematico: 'Las plantas y sus partes. Textos instructivos y narrativos. Operaciones matemáticas en el huerto.',
+    competencia: 'Redacta textos instructivos coherentes describiendo los pasos para la germinación y cuidado de semillas en el huerto escolar.'
   },
   contenidosMacro: [
     {
@@ -340,6 +356,13 @@ export const PLANTILLA_PRIMARIA: PlanificacionDocente = {
       id: 'pri-sem-1',
       numeroSemana: 1,
       rangoFechas: '13/10/2025 al 17/10/2025',
+      gradoAnio: '4to Grado',
+      seccion: 'B',
+      areaFormacion: 'Lengua y Literatura / Ciencias Naturales',
+      referenteTeorico: 'Estructura del texto instructivo y botánica elemental escolar.',
+      competencia: 'Produce textos instructivos breves identificando los requerimientos de germinación en el huerto escolar.',
+      temaGenerador: 'El huerto escolar y la redacción creativa comunitaria',
+      tejidoTematico: 'Las plantas y sus partes. Textos instructivos y narrativos.',
       clases: [
         {
           id: 'pri-c1',

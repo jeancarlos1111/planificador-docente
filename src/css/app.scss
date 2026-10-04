@@ -1,1 +1,93 @@
-// app global css
+// app global css (Mobile-First Polish)
+
+:root {
+  --app-radius-sm: 8px;
+  --app-radius-md: 12px;
+  --app-radius-lg: 16px;
+  --app-radius-xl: 20px;
+  --app-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+body {
+  font-family: var(--app-font);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+/* Allow text selection inside inputs and content */
+input, textarea, [contenteditable="true"], .selectable-text {
+  user-select: text;
+}
+
+/* Touch-friendly inputs: prevent iOS auto-zoom by keeping font-size >= 16px on small screens */
+@media (max-width: 600px) {
+  .q-field__native,
+  .q-field__input,
+  input,
+  textarea {
+    font-size: 15px !important;
+  }
+}
+
+/* Modern Card Styling */
+.mobile-card {
+  border-radius: var(--app-radius-lg);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.05);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+body.body--dark .mobile-card {
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Quasar Inputs rounded & mobile friendly */
+.q-field--outlined .q-field__control {
+  border-radius: var(--app-radius-md) !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.q-field--outlined.q-field--focused .q-field__control {
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* Buttons on touch screens */
+.q-btn {
+  border-radius: var(--app-radius-md);
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+/* Safe areas for mobile devices with notches / home bars */
+.safe-area-bottom {
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+}
+
+.safe-area-top {
+  padding-top: max(8px, env(safe-area-inset-top));
+}
+
+/* Smooth mobile scrolling */
+.smooth-scroll {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.4);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.7);
+}

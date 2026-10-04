@@ -17,19 +17,32 @@
           <q-select
             v-model="opcionesPDF.vistaExportar"
             :options="[
-              { label: 'Todo el Plan Integral', value: 'completo' },
-              { label: 'Solo Plan de Lapso (Macro)', value: 'lapso_macro' },
-              { label: 'Solo Plan Semanal (Micro)', value: 'semanal_micro' },
-              { label: 'Solo Cronograma de Evaluación', value: 'evaluacion_cronograma' },
-              { label: 'Solo Plan de Acción', value: 'plan_accion' }
+              { label: 'Formato: Planificación Semanal (Micro)', value: 'semanal_micro' },
+              { label: 'Formato: Plan de Lapso (Macro)', value: 'lapso_macro' },
+              { label: 'Formato: Cronograma de Evaluación', value: 'evaluacion_cronograma' },
+              { label: 'Formato: Plan de Acción', value: 'plan_accion' },
+              { label: 'Dossier Completo (Todos los Formatos)', value: 'completo' }
             ]"
             emit-value
             map-options
             dense
             outlined
-            label="Sección a Imprimir"
-            style="min-width: 190px;"
+            label="Formato Oficial"
+            style="min-width: 250px;"
             @update:model-value="planStore.guardarConfigPDF"
+          />
+
+          <!-- Filtro de semana para Formato Semanal -->
+          <q-select
+            v-if="opcionesPDF.vistaExportar === 'semanal_micro' && plan.semanasMicro.length > 1"
+            v-model="filtroSemana"
+            :options="opcionesSemanas"
+            emit-value
+            map-options
+            dense
+            outlined
+            label="Semana"
+            style="min-width: 140px;"
           />
 
           <!-- Formato Legal / Letter -->
@@ -76,6 +89,7 @@
             ref="pdfComponenteRef"
             :plan="plan"
             :opciones="opcionesPDF"
+            :semana-index="filtroSemana === 'todas' ? null : Number(filtroSemana)"
           />
         </div>
       </q-card-section>
@@ -84,7 +98,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useQuasar } from 'quasar';
 import { storeToRefs } from 'pinia';
 import { usePlanificacionStore } from '../../stores/usePlanificacionStore';
@@ -105,19 +119,34 @@ const { plan, opcionesPDF } = storeToRefs(planStore);
 
 const pdfComponenteRef = ref();
 const exportando = ref(false);
+const filtroSemana = ref<number | 'todas'>('todas');
+
+const opcionesSemanas = computed(() => {
+  const lista: Array<{ label: string; value: number | 'todas' }> = [
+    { label: 'Todas las Semanas', value: 'todas' }
+  ];
+  plan.value.semanasMicro.forEach((s, idx) => {
+    lista.push({
+      label: `Semana ${s.numeroSemana}`,
+      value: idx
+    });
+  });
+  return lista;
+});
 
 async function descargarPDF() {
   const el = pdfComponenteRef.value?.documentoImpresionRef;
   if (!el) return;
 
   exportando.value = true;
-  $q.loading.show({ message: 'Generando PDF oficial MPPE...' });
+  $q.loading.show({ message: 'Generando formato oficial MPPE...' });
 
   try {
     const grado = normalizarNombreArchivo(plan.value.contextoEscolar.gradoAnio || 'Grado');
     const area = normalizarNombreArchivo(plan.value.contextoEscolar.areaFormacion || 'Area');
     const tipo = opcionesPDF.value.vistaExportar;
-    const nombreArchivo = `Plan_${tipo}_${grado}_${area}_v${plan.value.version || 1}`;
+    const semStr = (tipo === 'semanal_micro' && filtroSemana.value !== 'todas') ? `_Sem${Number(filtroSemana.value) + 1}` : '';
+    const nombreArchivo = `Formato_${tipo}_${grado}_${area}${semStr}_v${plan.value.version || 1}`;
 
     await exportarPlanificacionPDF({
       elemento: el,
