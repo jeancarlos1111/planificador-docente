@@ -1,0 +1,1 @@
+import{t as e}from"./PlanificadorPage-CagPqyhp.js";import{M as t,_ as n,u as r}from"./runtime-core.esm-bundler-DCuaaf0N.js";var i=n({__name:`(index)`,setup(n){return(n,i)=>(t(),r(e))}});export{i as default};
