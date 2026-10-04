@@ -20,9 +20,9 @@ import type {
 
 declare module 'vue-router' {
   interface TypesConfig {
-    ParamParsers:
-      | never
+    _ParamParsers: {}
     RouteNamedMap: import('vue-router/auto-routes').RouteNamedMap
+    _RouteFileInfoMap: import('vue-router/auto-routes')._RouteFileInfoMap
   }
 }
 
@@ -60,6 +60,13 @@ declare module 'vue-router/auto-routes' {
       { path: ParamValue<false> },
       | never
     >,
+    '/PlanificadorPage': RouteRecordInfo<
+      '/PlanificadorPage',
+      '/PlanificadorPage',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
   }
 
   /**
@@ -80,11 +87,15 @@ declare module 'vue-router/auto-routes' {
         | '//second'
       views:
         | 'default'
+      pathParamNames:
+        | never
     }
     'src/pages/index/(index).vue': {
       routes:
         | '//(index)'
       views:
+        | never
+      pathParamNames:
         | never
     }
     'src/pages/index/second.vue': {
@@ -92,11 +103,23 @@ declare module 'vue-router/auto-routes' {
         | '//second'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/[...path].vue': {
       routes:
         | '/[...path]'
       views:
+        | never
+      pathParamNames:
+        | 'path'
+    }
+    'src/pages/PlanificadorPage.vue': {
+      routes:
+        | '/PlanificadorPage'
+      views:
+        | never
+      pathParamNames:
         | never
     }
   }

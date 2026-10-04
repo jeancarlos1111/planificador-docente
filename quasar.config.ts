@@ -48,7 +48,7 @@ export default defineConfig(ctx => {
       vueRouterMode: "hash", // available values: 'hash', 'history'
       // vueRouterBase,
 
-      // publicPath: '/',
+      publicPath: process.env.PUBLIC_PATH || (ctx.prod ? "/planificador-docente/" : "/"),
       // define: {},
       // defineEnv: {}
       // ignorePublicFolder: true,
@@ -104,7 +104,7 @@ export default defineConfig(ctx => {
       // directives: [],
 
       // Quasar plugins
-      plugins: []
+      plugins: ["Notify", "Dialog", "Loading", "Dark"]
     },
 
     // animations: 'all', // --- includes all animations

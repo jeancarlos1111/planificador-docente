@@ -19,11 +19,15 @@
     "lint:check": "oxfmt --check && oxlint",
     "dev": "quasar dev",
     "build": "quasar build",
+    "build:pwa": "quasar build -m pwa",
+    "deploy": "quasar build -m pwa && gh-pages -d dist/pwa",
     "typecheck": "vue-tsc --noEmit",
     "postinstall": "quasar prepare --silent"
   },
   "dependencies": {
     "@quasar/extras": "^2.1.0",
+    "dexie": "^4.4.6",
+    "html2pdf.js": "^0.14.0",
     "pinia": "^4.0.2",
     "quasar": "^2.34.0",
     "vue": "^3.5.22",
@@ -35,6 +39,7 @@
     "@quasar/app-vite": "^3.10.1",
     "@types/node": "^22.19.11",
     "autoprefixer": "^10.4.27",
+    "gh-pages": "^6.3.0",
     "oxfmt": "^0.x",
     "oxlint": "^1.x",
     "oxlint-tsgolint": "^7.0.2001",
